@@ -1,0 +1,256 @@
+1 : Ulanish, proekt nomi bilan turgan papkani root yoki conf ga ozgartirish
+    Avval bir marta rung qilish takshirish
+
+2 : root.settings ichida 51 chi qatorda urlni togirlash [ ROOT_URLCONF = 'root.urls' ]  ni yozib qo'yish
+
+3 : [ from os.path import join ] kutubxonasi bilan bog'lanishlikni sozlash
+
+4 : root.settings ichida 118 chi qatordan shu codlarni yozib qoyish
+
+        STATIC_URL = 'static/'
+        STATIC_ROOT = join(BASE_DIR, 'static')
+
+        MEDIA_URL = 'media/'
+        MEDIA_ROOT = join(BASE_DIR, 'media')
+
+5 : rung qilish joyidan edit Configurations bolimidan modul nomidek joyini rootga ozgartrish
+
+        AGAR root papka ochilgan bolsa bu codni yozish kifoya
+        [  PYTHONUNBUFFERED=1;DJANGO_SETTINGS_MODULE=root.settings   ]
+        FARQSIZ baribir shu korinishda boladi  tepada hazil aldaydi :)
+
+6 : settings.Languages & Frameworks.Django bolimidan Django project root qatoriga root ni korsatib qoyish
+    Tagida settings avto yoziladi va pastidagi settings ni ochirib project manage.py ni korsatish
+
+7 : Django bilan database o'rtasida migrate qilayotganvahtda qanaqa query yuborilayotganini
+     log qilib string da korsatib turadi root.settings oxiriga qoshib qoyiladi
+
+LOGGING = {
+    'version': 1,pip show django-unfold # Django unfold tekshirish
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    }
+}
+
+8 : apply va ok bilan sozlamalar tugaydi
+
+9 : Dict methodlarini qaytatish !
+
+10 : agar Django rung qilinib sayt qidruv bolimida / qoyib qidruv berilsa bu path param boladi
+     url bilan bitta bolib ketsa
+
+11 : query paramda  / dan keyin ? key=irdvdpt  korinishida boladi
+
+12 : [ python3 manage.py startapp apps ]    : Yangi app yaratish terminal codi bilan
+
+13 : root.urls ichida faqat [ path('',include('apps.urls')) ] qoladi
+     bu bilan urls lar yangi joyini korsatib qoyish
+
+14 : settings.INSTALLED_APPS [ ] ichiga apps ni qoshib qoyish
+
+14 : apps.static file ni ochish HTML CSS va rasmlar joylash
+
+15 : template ichidan html ochish kodlarni joylash
+     apps.views.py ichidan def view yaratish funksiya berish
+     apps.urls.py ichidan yaratilgan view ga url berish
+
+16 : [  python3 manage.py makemigrations  ] : database ga qanaqa tabel yaratish query sini yozib oladi
+
+17 : [  python3 manage.py migrate  ]        : data basega yozadi
+
+18 : [  python3 manage.py createsuperuser ] : bilan adminlik ga kirish huquqi olinadi
+
+19 : admin panelga yozilgan Claslarni registratsiya qilish uchun apps.admin ichida
+     @admin.register(Model_name) ko'rinishida yoziladi boshlanish yoriqnoma uchun
+
+21 : HTML codlarni qidirish ctrl f
+
+22 : HTML cod for qismida product yoziladi products emas
+
+23 : apps.views.py ga view yozish
+
+        from django.views.generic import TemplateView
+
+        class HomeView(TemplateView):
+            template_name = 'home.html'
+
+
+    korinishida boshlang'ich qolip
+
+24 : apps.urls.py ga urls larni berish
+
+        from django.urls import path
+        from apps.views import HomeView
+
+        urlpatterns = [
+            path('', HomeView.as_view(), name='home'),
+        ]
+
+     ko'rinishida boshlang'ich qolip
+
+25 : projects.urls.py ichiga apps.urls ni ulash
+
+        from django.contrib import admin
+        from django.urls import path, include
+
+        urlpatterns = [
+               path('',include('apps.urls')),
+               path('admin/', admin.site.urls),
+
+        ]
+     Admin ulanishligi shu yerda qoldi bu misol variantda
+
+     root.urls ga qoshish
+
+     from django.conf import settings
+     from django.conf.urls.static import static
+     from django.contrib import admin
+     from django.urls import path
+
+
+     urlpatterns = [
+        path('',include('apps.urls')),
+        path('admin/', admin.site.urls),
+
+     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+26 : Ma'lumotlar bazasi ya'ni data base ni ulash   apps.models.py
+
+        from django.db import models
+
+        class Category(models.Model):
+            name = models.CharField(max_length=100)
+
+            def __str__(self):
+                return self.name
+
+     Bu misol varantda
+
+27 : ADMIN PANEL UNFOLD uchun  instal kutub xonasi ni ornatish
+        [ pip show django-unfold ]
+
+28 : ADMIN PANEL UNFOLD uchun settings.py ga qoshish sozlamasi
+
+UNFOLD = {
+    "SHOW_VIEW_ON_SITE": False,
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": _("Polls"),
+                "separator": False,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Questions"),
+                        "icon": "question_mark",
+                        "link": reverse_lazy("admin:apps_question_changelist"),
+                    },
+
+                ],
+            },
+        ],
+
+    }
+}
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= POSTGRES GA ULANISH =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+28 : [ .env ] papka yaratish
+
+29 : postgres container yaratish kodi
+
+    [  docker run -it -d --name team -e postgres -e POSTGRES_PASSWORD=1 -p 5432:5432 postgres:alpine ]
+
+30 : Docker container tekshirish kodi
+
+    [ docker ps ]
+
+31 : Database ga ulanish PostgresSql user ga postgres yozish parol kiritish va test qilish
+
+32 : [ pip install psycopg2-binary ] ni ornatish
+
+33 : root settings.py ga qoshish
+
+DATABASES = {
+    'default': {
+        'ENGINE' : 'django.db.backends.postgresql', # Default da
+        'NAME' : '100k',            # Yuklanishi kerak bolgan database nomini korsatib qoyish
+        'USER' : 'postgres',        # Default da
+        'PASSWORD' : '1',           # O'sha parol
+        'HOST' : 'localhost',       # Default da
+        'PORT' : '5432'             # Default da
+    }
+}
+
+34 : settings.py ga yana qohshib qoyish
+
+    [ AUTH_USER_MODEL = 'apps.User' ]
+
+35 : Xatolik user bilan chiqsa Model qismda user uchun model yozilmagan
+
+36 : Barcha ochiq container ni korish
+
+    [ docker ps -a ]
+
+37 : Container start code
+
+    [ docker start 817a25d83439 ]
+
+38 : Container stop code
+
+    [ docker stop 817a25d83439 ]
+
+39 : Postgres o'rnatilganligini teskshirish
+
+    [ psql --version ]
+
+40 : Postgres imageslarni korish
+
+    [ docker images ]
+
+41 : Postgres image larni o'chirish
+
+    [ docker rmi <IMAGE-ID> ]
+
+42 : venv Deleted code
+
+    [ rm -rf .venv ]
+
+43 : venv Created code
+
+    [ python3 -m venv .venv ]
+
+44 : venv Activate code
+
+    [ source .venv/bin/activate ]
+
+45 : terminal memory
+
+    RAM [ free -h ]
+    Main Memory [ df -h ]
+
+46 :  pip install psycopg2-binary # Binary o'rnatish
+
+47 :  pip3 install django-stubs # Objects funksiyasi uchun
+
+48 : celery -A root --loglevel=info # NOANIQ KUTUB XONA TUSHUNISH KERAK
+
+49 :

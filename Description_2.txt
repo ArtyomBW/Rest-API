@@ -1,0 +1,32 @@
+
+1 : installation
+
+    pip install djangorestframework
+    pip install markdown       # Markdown support for the browsable API.
+    pip install django-filter  # Filtering support
+
+2 : Status code
+    100 - 199  Malumot beradigan response ????
+    200 - 299 Muvaffaqiyatli
+    300 - 399 Riderct, urldan urlga otyapti
+    400 - 499 Klient xatosi
+    500 - 599   server xatosi
+
+3 : DRF CONFIG
+
+    REST_FRAMEWORK = {
+        # Use Django's standard `django.contrib.auth` permissions,
+        # or allow read-only access for unauthenticated users.
+        'DEFAULT_PERMISSION_CLASSES': [
+            'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        ]
+    }
+
+    DjangoModelPermissionsOrAnonReadOnly == login qilganlar ishlata olishni belgilash
+    AllowAny = Hamma uchun ochiq qilib belgilash
+
+
+3 NEW repostory
+    [ https://github.com/ArtyomBW/Rest-API.git ]
+
+
