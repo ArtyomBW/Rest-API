@@ -60,9 +60,6 @@ Fix_up:
 Fix_category:
 	python manage.py dumpdata apps.Category --indent 4 > category.json # Category uchun JSON fayl yaratish
 
-redis:
-	docker start 4997e1a4e3eb # Redisni aktivatsiya qilish
-
 Fix_cat:
 	 python manage loaddata category.json # Category json fayl ni aktivatsiya qilish
 
