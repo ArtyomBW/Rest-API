@@ -66,10 +66,7 @@ redis:
 Fix_cat:
 	 python manage loaddata category.json # Category json fayl ni aktivatsiya qilish
 
-lang:
-	python manage.py makemessage -l uz
-	python manage.py makemessage -l ru
-	python manage.py makemessage -l en
+
 
 
 
